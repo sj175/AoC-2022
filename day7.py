@@ -8,7 +8,7 @@ def read_input():
 
 
 class Node:
-    def __init__(self, value, file_type, children, parent=None):
+    def __init__(self, value, file_type, children, size=0, parent=None):
         if children:
             self.children = children
         else:
@@ -18,6 +18,13 @@ class Node:
 
         self.value = value
         self.file_type = file_type
+        self.size = size
+
+    def __str__(self):
+        return self.file_type + " " + self.value
+
+    def __repr__(self):
+        return self.__str__()
 
     def add_child(self, child):
         self.children.append(child)
@@ -32,19 +39,24 @@ class Node:
         raise ValueError(f"Child not found: {child}")
 
     def get_directories(self):
-        dirs = []
+        dirs = [self]
 
-        if not self.children:
-            return self.value
-        else:
-            child_dirs = list(filter(lambda x: x.file_type == "dir", self.children))
-            if child_dirs:
-                for child in child_dirs:
-                    dirs.append(child.get_directories())
-            else:
-                return self.value
+        for child in self.children:
+            if child.file_type == "dir":
+                dirs += child.get_directories()
 
         return dirs
+
+    def get_size(self):
+        total = 0
+
+        if not self.children:
+            return self.size
+
+        for child in self.children:
+            total += child.get_size()
+
+        return total
 
 
 def main() -> int:
@@ -67,48 +79,22 @@ def main() -> int:
                     current = current.get_child(dir_name)
 
         else:
+            filename = line.split(" ")[1]
             if line.startswith("dir"):
-                print("adding child")
-                filename = line.split(" ")[1]
-                current.add_child(Node(filename, "dir", [], current))
-                print(current)
-                print(current.children)
+                current.add_child(Node(filename, "dir", [], parent=current))
             else:
-                current.add_child(Node(filename, "file", [], current))
+                current.add_child(Node(filename, "file", [], int(line.split(" ")[0]), current))
 
     return root.get_directories()
 
 
-# def main() -> int:
-# 	the_input = filter(len, read_input().split("\n"))
-# 	state = defaultdict(list)
-# 	current = ""
-# 	current_dir = state[current]
-
-# 	for line in the_input:
-# 		print(line)
-# 		if line.startswith("$"):
-# 			command = line.split("$ ")[1]
-# 			if command.startswith("ls"):
-# 				pass
-# 			elif command.startswith("cd"):
-# 				dir_name = command.split(" ")[1]
-# 				if dir_name == "/":
-# 					current = "/"
-# 				elif dir_name == "..":
-# 					current = ''.join(dir_name[:-len(dir_name.split("/")[-2])-1])
-# 				else:
-# 					current += command.split(" ")[1] + "/"
-# 					current_dir = state[current]
-
-# 		else:
-# 			current_dir.append(line)
-
-# 	return state
-
-
 def part1() -> int:
-    return main()
+    dirs = main()
+    dir_sizes = []
+    for dir in dirs:
+        dir_sizes.append(dir.get_size())
+
+    return sum(filter(lambda x: x < 100000, dir_sizes))
 
 
 def part2() -> int:
@@ -116,5 +102,5 @@ def part2() -> int:
 
 
 if __name__ == "__main__":
-    print(part1())
-# print(part2())
+    print(part1() == 1453349)
+    print(part2())
