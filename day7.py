@@ -85,11 +85,12 @@ def main() -> int:
             else:
                 current.add_child(Node(filename, "file", [], int(line.split(" ")[0]), current))
 
-    return root.get_directories()
+    return root
 
 
 def part1() -> int:
-    dirs = main()
+    root = main()
+    dirs = root.get_directories()
     dir_sizes = []
     for dir in dirs:
         dir_sizes.append(dir.get_size())
@@ -98,7 +99,15 @@ def part1() -> int:
 
 
 def part2() -> int:
-    return main()
+    root = main()
+    size_needed = 30000000 - (70000000 - root.get_size())
+
+    dirs = root.get_directories()
+    dir_sizes = []
+    for dir in dirs:
+        dir_sizes.append(dir.get_size())
+
+    return min(filter(lambda x: x >= size_needed, dir_sizes))
 
 
 if __name__ == "__main__":
