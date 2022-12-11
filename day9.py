@@ -88,9 +88,26 @@ def part1() -> int:
 
 
 def part2() -> int:
-    return main()
+    moves = filter(len, read_input().split("\n"))
+    ropes = []
+    for _ in range(10):
+        ropes.append(Rope(0, 0))
+    t_destinations = {ropes[9]}
+
+    for move in moves:
+        dir = move.split(" ")[0]
+        length = int(move.split(" ")[1])
+        for _ in range(length):
+            ropes[0] = ropes[0] + UNIT_DIRECTIONS[dir]
+            for i in range(9):
+                if not validate_rules(ropes[i], ropes[i+1]):
+                    ropes[i+1] = get_new_t(ropes[i], ropes[i+1])
+                    if i == 8:
+                        t_destinations.add(ropes[i+1])
+
+    return len(t_destinations)
 
 
 if __name__ == "__main__":
-    print(part1())
-    # print(part2())
+    # print(part1())
+    print(part2())
