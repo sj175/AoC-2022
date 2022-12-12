@@ -7,16 +7,44 @@ def read_input():
         return f.read()
 
 
+def get_column(matrix, j):
+    """gets jth column"""
+    return [matrix[i][j] for i, _ in enumerate(matrix)]
+
+
+def is_visible(matrix, i, j) -> bool:
+    right = matrix[i][j + 1:]
+    left = matrix[i][:j]
+    up = get_column(matrix, j)[:i]
+    down = get_column(matrix, j)[i + 1:]
+
+    return any((
+        all(x < matrix[i][j] for x in right),
+        all(x < matrix[i][j] for x in left),
+        all(x < matrix[i][j] for x in up),
+        all(x < matrix[i][j] for x in down)
+    ))
+
+
 def main() -> int:
-    return None
+    input_strings = [list(x) for x in filter(len, read_input().split("\n"))]
+    matrix = [list(map(int, x)) for x in input_strings]
+    total = 0
+
+    for i, row in enumerate(matrix):
+        for j, elem in enumerate(row):
+            if is_visible(matrix, i, j):
+                total += 1
+
+    return total
 
 
 def part1() -> int:
-    return None
+    return main()
 
 
 def part2() -> int:
-    return None
+    return main()
 
 
 if __name__ == "__main__":
