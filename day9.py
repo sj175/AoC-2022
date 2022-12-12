@@ -61,8 +61,12 @@ def get_new_t(h: Rope, t: Rope) -> Rope:
     elif (abs(diff.x) == 1) and (abs(diff.y) == 2):
         return Rope(t.x + diff.x, t.y + diff.y // 2)
 
+    elif (abs(diff.x) == 2) and (abs(diff.y) == 2):  # only happens in part 2
+        return Rope(t.x + diff.x // 2, t.y + diff.y // 2)
+
     else:
         print("diff: ", diff)
+        print(h, t)
         raise Exception("I don't know what the next move should be")
 
 
@@ -102,7 +106,7 @@ def draw_grid(ropes):
                 output += "."
         output += "\n"
 
-    print(output)
+    # print(output)
 
 
 def part2() -> int:
@@ -123,7 +127,6 @@ def part2() -> int:
                     ropes[i + 1] = get_new_t(ropes[i], ropes[i + 1])
                     if i == 8:
                         t_destinations.add(ropes[i + 1])
-        print(move)
 
     return len(t_destinations)
 
