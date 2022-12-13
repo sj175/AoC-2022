@@ -26,6 +26,25 @@ def is_visible(matrix, i, j) -> bool:
     ))
 
 
+def calc_viewing_distance(direction, tree) -> int:
+    if not direction:
+        return 0
+    for i in range(len(direction)):
+        if direction[i] >= tree:
+            break
+
+    return i+1
+
+
+def get_scenic_score(matrix, i, j) -> int:
+    right = matrix[i][j + 1:]
+    left = matrix[i][:j]
+    up = get_column(matrix, j)[:i]
+    down = get_column(matrix, j)[i + 1:]
+
+    return calc_viewing_distance(right, matrix[i][j]) * calc_viewing_distance(left[::-1], matrix[i][j]) * calc_viewing_distance(up[::-1], matrix[i][j]) * calc_viewing_distance(down, matrix[i][j])
+
+
 def main() -> int:
     input_strings = [list(x) for x in filter(len, read_input().split("\n"))]
     matrix = [list(map(int, x)) for x in input_strings]
@@ -44,9 +63,17 @@ def part1() -> int:
 
 
 def part2() -> int:
-    return main()
+    input_strings = [list(x) for x in filter(len, read_input().split("\n"))]
+    matrix = [list(map(int, x)) for x in input_strings]
+    max_viewing_distance = 0
+
+    for i, row in enumerate(matrix):
+        for j, elem in enumerate(row):
+            max_viewing_distance = max(max_viewing_distance, get_scenic_score(matrix, i, j))
+
+    return max_viewing_distance
 
 
 if __name__ == "__main__":
     print(part1())
-    # print(part2())
+    print(part2())
