@@ -33,7 +33,7 @@ def calc_viewing_distance(direction, tree) -> int:
         if direction[i] >= tree:
             break
 
-    return i+1
+    return i + 1
 
 
 def get_scenic_score(matrix, i, j) -> int:
@@ -42,10 +42,12 @@ def get_scenic_score(matrix, i, j) -> int:
     up = get_column(matrix, j)[:i]
     down = get_column(matrix, j)[i + 1:]
 
-    return calc_viewing_distance(right, matrix[i][j]) * calc_viewing_distance(left[::-1], matrix[i][j]) * calc_viewing_distance(up[::-1], matrix[i][j]) * calc_viewing_distance(down, matrix[i][j])
+    return calc_viewing_distance(right, matrix[i][j]) * calc_viewing_distance(left[::-1],
+                                                                              matrix[i][j]) * calc_viewing_distance(
+        up[::-1], matrix[i][j]) * calc_viewing_distance(down, matrix[i][j])
 
 
-def main() -> int:
+def part1() -> int:
     input_strings = [list(x) for x in filter(len, read_input().split("\n"))]
     matrix = [list(map(int, x)) for x in input_strings]
     total = 0
@@ -56,10 +58,6 @@ def main() -> int:
                 total += 1
 
     return total
-
-
-def part1() -> int:
-    return main()
 
 
 def part2() -> int:
