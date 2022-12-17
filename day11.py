@@ -1,12 +1,3 @@
-def get_input_name() -> str:
-    return __file__.split("/")[-1].split(".")[0] + ".txt"
-
-
-def read_input():
-    with open(get_input_name(), "r") as f:
-        return f.read()
-
-
 class Monkey:
     def __init__(self, items, operation, test_by):
         self.items = items
@@ -30,7 +21,7 @@ def main(rounds) -> int:
         for monkey in monkeys:
             for item in monkey.items:
                 item_worry_level = monkey.operation(item)
-                item_worry_level %= (2*3*5*7*11*13*17*19)
+                item_worry_level %= (2 * 3 * 5 * 7 * 11 * 13 * 17 * 19)  # change operation to //= 3 for part 1
                 if item_worry_level % monkey.test_by[0] == 0:
                     monkeys[monkey.test_by[1]].items.append(item_worry_level)
                 else:
@@ -39,7 +30,7 @@ def main(rounds) -> int:
             monkey.items = []
 
     highest = sorted(map(lambda x: x.inspection_count, monkeys))[-2:]
-    return highest[0]*highest[1]
+    return highest[0] * highest[1]
 
 
 def part1() -> int:
