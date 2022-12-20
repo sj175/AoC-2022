@@ -57,9 +57,9 @@ def bfs(start_i, start_j, end_value):
     while queue:
         current = queue.pop(0)
         for elem in get_connected(current):
-            if elem.value == end_value:
-                return elem
             if ord(elem.value) <= ord(current.value) + 1:
+                if elem.value == end_value:
+                    return elem
                 if (elem.i, elem.j) not in seen:
                     queue.append(elem)
                     seen.add((elem.i, elem.j))
@@ -91,10 +91,10 @@ def get_direction(a, b):
         return ">"
 
 
-
 def part2():
     output = [["."] * 8 for _ in range(5)]
     final = main("S", "E")
+    print(final.path_length)
     current = final
     output[final.i][final.j] = "E"
 
