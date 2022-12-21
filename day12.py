@@ -1,7 +1,7 @@
 from collections import namedtuple
 
 the_input = []
-Point = namedtuple("Point", "value path_length i j previous")
+Point = namedtuple("Point", "label value path_length i j previous")
 
 
 def get_input_name() -> str:
@@ -34,31 +34,40 @@ def main(start, end):
     return bfs(start_i, start_j, end)
 
 
+def replace_E_with_z(i, j):
+    repl = {"E": "z", "S": "a"}
+    return the_input[i][j] if the_input[i][j] not in repl.keys() else repl[the_input[i][j]]
+
+
 def get_connected(current):
     i = current.i
     j = current.j
     path_length = current.path_length
     output = []
     if i > 0:
-        output.append(Point(the_input[i - 1][j], path_length + 1, i - 1, j, current))
+        value = replace_E_with_z(i - 1, j)
+        output.append(Point(the_input[i - 1][j], value, path_length + 1, i - 1, j, current))
     if i < 4:
-        output.append(Point(the_input[i + 1][j], path_length + 1, i + 1, j, current))
+        value = replace_E_with_z(i + 1, j)
+        output.append(Point(the_input[i + 1][j], value, path_length + 1, i + 1, j, current))
     if j > 0:
-        output.append(Point(the_input[i][j - 1], path_length + 1, i, j - 1, current))
+        value = replace_E_with_z(i, j - 1)
+        output.append(Point(the_input[i][j - 1], value, path_length + 1, i, j - 1, current))
     if j < 7:  # 153:
-        output.append(Point(the_input[i][j + 1], path_length + 1, i, j + 1, current))
+        value = replace_E_with_z(i, j + 1)
+        output.append(Point(the_input[i][j + 1], value, path_length + 1, i, j + 1, current))
 
     return output
 
 
 def bfs(start_i, start_j, end_value):
-    queue = [Point("a", 0, start_i, start_j, None)]
+    queue = [Point(the_input[start_i][start_j], replace_E_with_z(start_i, start_j), 0, start_i, start_j, None)]
     seen = set()
     while queue:
         current = queue.pop(0)
         for elem in get_connected(current):
-            if ord(elem.value) <= ord(current.value) + 1:
-                if elem.value == end_value:
+            if ord(elem.value) >= ord(current.value) - 1:
+                if elem.label == end_value:
                     return elem
                 if (elem.i, elem.j) not in seen:
                     queue.append(elem)
@@ -93,7 +102,7 @@ def get_direction(a, b):
 
 def part2():
     output = [["."] * 8 for _ in range(5)]
-    final = main("S", "E")
+    final = main("E", "a")
     print(final.path_length)
     current = final
     output[final.i][final.j] = "E"
