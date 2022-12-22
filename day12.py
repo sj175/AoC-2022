@@ -144,5 +144,3 @@ if __name__ == "__main__":
     print("path length: ", part1())
     print("*****")
     part2()
-
-# 177 too low
